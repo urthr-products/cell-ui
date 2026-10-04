@@ -31,8 +31,8 @@ npm run build      # Build into dist/
 ```
 
 ```ts
-import { Spreadsheet } from 'cell-ui';
-import 'cell-ui/style.css';
+import { Spreadsheet } from '@urthr-products/cell-ui';
+import '@urthr-products/cell-ui/style.css';
 
 const sheet = new Spreadsheet(document.getElementById('app')!, { rows: 100, cols: 20, locale: 'en' });
 sheet.model.setValue(0, 0, 'Hello');

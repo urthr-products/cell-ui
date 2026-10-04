@@ -49,7 +49,7 @@ sheet.pasteFromClipboard({ valuesOnly: true });     // navigator.clipboard.read(
 sheet.pasteData({ html, text });                    // 任意のデータを貼り付け(サーバーから受け取った表など)
 
 // 低レベル API
-import { buildClipboardPayload, parseHtmlTable, parseTsv, serializeHtml, serializeTsv, styleToCss } from 'cell-ui';
+import { buildClipboardPayload, parseHtmlTable, parseTsv, serializeHtml, serializeTsv, styleToCss } from '@urthr-products/cell-ui';
 const payload = buildClipboardPayload(sheet.model, range);   // { text, html, block, range }
 const table = parseHtmlTable(html);                          // { cells, columnWidths, rowHeights } | null
 ```

@@ -32,7 +32,7 @@ Excel の「データの入力規則」に相当します。範囲に規則を�
 ## 範囲の指定
 
 ```ts
-import { columnRange, rowRange } from 'cell-ui';
+import { columnRange, rowRange } from '@urthr-products/cell-ui';
 
 sheet.model.setValidation(columnRange(1), { type: 'number', min: 0, integer: true });        // B 列全体
 sheet.model.setValidation(columnRange(2, 3), { type: 'list', options: ['A', 'B'] });          // C〜D 列

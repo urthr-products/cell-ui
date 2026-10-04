@@ -7,9 +7,14 @@ import { mkdirSync } from 'node:fs';
 mkdirSync('e2e-out', { recursive: true });
 const server = await createServer({ server: { port: 5199, strictPort: true }, logLevel: 'error' });
 await server.listen();
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
+const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+const browser = await chromium.launch({
+  ...(executablePath ? { executablePath } : {}),
+  args: ['--no-sandbox'],
+});
 const context = await browser.newContext({ viewport: { width: 1200, height: 700 }, permissions: ['clipboard-read', 'clipboard-write'] });
 const page = await context.newPage();
+const mod = process.platform === 'darwin' ? 'Meta' : 'Control';
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 page.on('console', (m) => { if (m.type() === 'error' && !/favicon|404/.test(m.text())) errors.push(m.text()); });
@@ -52,13 +57,13 @@ await page.keyboard.press('Enter');
 check('Enter after Tab returns to start column', (await active()) === 'A13', await active());
 
 // Shortcuts: select, bold, copy, paste
-await page.keyboard.press('Control+Home');
+await page.keyboard.press(`${mod}+Home`);
 check('Ctrl+Home', (await active()) === 'A1', await active());
 await page.keyboard.press('Shift+ArrowRight');
 await page.keyboard.press('Shift+ArrowDown');
-await page.keyboard.press('Control+i');
+await page.keyboard.press(`${mod}+i`);
 check('Ctrl+I applies italic to range', await page.evaluate(() => window.sheet.model.getStyle(1, 1).italic === true));
-await page.keyboard.press('Control+c');
+await page.keyboard.press(`${mod}+c`);
 const clip = await page.evaluate(async () => {
   const items = await navigator.clipboard.read();
   const out = {};
@@ -67,11 +72,11 @@ const clip = await page.evaluate(async () => {
 });
 check('Ctrl+C writes text/plain', (clip['text/plain'] ?? '').startsWith('商品\t数量'), JSON.stringify(clip['text/plain']));
 check('Ctrl+C writes text/html', /<table/.test(clip['text/html'] ?? '') && /font-weight:\s*bold/.test(clip['text/html'] ?? '') && /x:num="12"/.test(clip['text/html'] ?? ''), (clip['text/html'] ?? '').slice(0, 200));
-await page.keyboard.press('Control+End');
+await page.keyboard.press(`${mod}+End`);
 await page.keyboard.press('ArrowDown');
 await page.keyboard.press('ArrowDown');
 const target = await active();
-await page.keyboard.press('Control+v');
+await page.keyboard.press(`${mod}+v`);
 const pastedRange = await page.evaluate(() => { const r = window.sheet.selection.range; return [r.start.row, r.start.col, r.end.row, r.end.col]; });
 const pv = await page.evaluate(([r, c]) => window.sheet.model.getCell(r, c), [pastedRange[0], pastedRange[1]]);
 check('Ctrl+V pastes block with style', pv && pv.value === '商品' && pv.style && pv.style.bold === true && pv.style.italic === true, JSON.stringify(pv) + ' at ' + target);
@@ -81,10 +86,10 @@ await page.evaluate(async () => {
   const html = `<html><head><style>.xl65{color:#FF0000;font-weight:700;background:#FFFF00;border:.5pt solid windowtext}</style></head><body><table><tr><td class=xl65>Excel</td><td x:num>1,000</td></tr><tr><td>b1</td><td>b2</td></tr></table></body></html>`;
   await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob(['Excel\t1000\r\nb1\tb2\r\n'], { type: 'text/plain' }) })]);
 });
-await page.keyboard.press('Control+Home');
+await page.keyboard.press(`${mod}+Home`);
 await page.keyboard.press('ArrowDown');
 for (let i = 0; i < 20; i++) await page.keyboard.press('ArrowDown');
-await page.keyboard.press('Control+v');
+await page.keyboard.press(`${mod}+v`);
 const ex = await page.evaluate(() => window.sheet.model.getCell(21, 0));
 const exn = await page.evaluate(() => window.sheet.model.getValue(21, 1));
 check('Excel HTML paste applies styles', ex && ex.value === 'Excel' && ex.style.color === '#ff0000' && ex.style.bold && ex.style.backgroundColor === '#ffff00' && ex.style.borderTop?.style === 'thin', JSON.stringify(ex));
@@ -92,11 +97,11 @@ check('Excel HTML paste parses x:num', exn === 1000, String(exn));
 await page.screenshot({ path: 'e2e-out/03-after-paste.png' });
 
 // Undo
-await page.keyboard.press('Control+z');
+await page.keyboard.press(`${mod}+z`);
 check('Ctrl+Z undoes paste', (await value(21, 0)) === null);
 
 // Toolbar: fill colour via button
-await page.keyboard.press('Control+Home');
+await page.keyboard.press(`${mod}+Home`);
 await page.click('.cui-tb-split:nth-of-type(2) .cui-tb-color, [data-id]');
 await page.click('.cui-tb-btn[title^="塗りつぶしの色"].cui-tb-color');
 check('toolbar fill colour', (await page.evaluate(() => window.sheet.model.getStyle(0, 0).backgroundColor)) === '#ffff00', await page.evaluate(() => JSON.stringify(window.sheet.model.getStyle(0, 0))));
@@ -111,12 +116,22 @@ await page.keyboard.press('Escape');
 
 // Fill handle drag
 await page.evaluate(() => { window.sheet.selection.setActive({ row: 1, col: 1 }); });
-await page.waitForTimeout(100);
-const fh = await page.locator('.cui-fill-handle').boundingBox();
-await page.mouse.move(fh.x + 3, fh.y + 3);
-await page.mouse.down();
-await page.mouse.move(fh.x + 3, fh.y + 60, { steps: 5 });
-await page.mouse.up();
+const fillHandle = page.locator('.cui-fill-handle');
+await fillHandle.waitFor({ state: 'visible' });
+await page.waitForFunction(() => {
+  const handle = document.querySelector('.cui-fill-handle');
+  const rect = handle?.getBoundingClientRect();
+  return !!rect && rect.width > 0 && rect.height > 0;
+});
+await fillHandle.dispatchEvent('mousedown', { button: 0 });
+await page.evaluate(() => {
+  const rect = window.sheet.grid.viewport.getBoundingClientRect();
+  const clientX = rect.left + window.sheet.grid.cols.offset(1) + window.sheet.grid.cols.size(1) / 2;
+  const clientY = rect.top + window.sheet.grid.rows.offset(3) + window.sheet.grid.rows.size(3) / 2;
+  window.dispatchEvent(new MouseEvent('mousemove', { clientX, clientY, bubbles: true }));
+  window.dispatchEvent(new MouseEvent('mouseup', { clientX, clientY, bubbles: true }));
+});
+await page.waitForFunction(() => window.sheet.model.getValue(3, 1) === 12);
 check('fill handle copies value', (await value(3, 1)) === 12, String(await value(3, 1)));
 
 // Column resize by drag
@@ -187,10 +202,31 @@ await wcHandle.asElement().click({ button: 'right', position: { x: 30, y: 10 } }
 check('context menu opens inside shadow root', await page.evaluate(() => !!document.getElementById('wc').shadowRoot.querySelector('.cui-menu')));
 await page.keyboard.press('Escape');
 // Fixed 10x5 table that grows
-const smallH0 = await page.evaluate(() => document.getElementById('small').getBoundingClientRect().height);
-check('fit-content element height matches 10 rows', Math.abs(smallH0 - (22 + 10 * 22 + 3 + 2 + 24)) < 3, String(smallH0));
+const smallMetrics = await page.evaluate(() => {
+  const element = document.getElementById('small');
+  const root = element.shadowRoot.querySelector('.cui-root');
+  const grid = element.shadowRoot.querySelector('.cui-grid');
+  const formulaBar = element.shadowRoot.querySelector('.cui-formulabar');
+  return {
+    height: element.getBoundingClientRect().height,
+    gridHeight: grid.getBoundingClientRect().height,
+    formulaBarHeight: formulaBar?.getBoundingClientRect().height ?? 0,
+    rowCount: element.sheet.model.rowCount,
+    borderHeight: root.getBoundingClientRect().height - root.clientHeight,
+  };
+});
+const smallH0 = smallMetrics.height;
+const expectedGridHeight = 22 + 10 * 22 + 3;
+const expectedElementHeight = expectedGridHeight + smallMetrics.formulaBarHeight + smallMetrics.borderHeight;
+check('fit-content element height matches 10 rows', smallMetrics.rowCount === 10 && Math.abs(smallH0 - expectedElementHeight) < 3, JSON.stringify(smallMetrics));
 await page.click('#addRow');
-await page.waitForTimeout(50);
+await page.waitForFunction(
+  ({ previousHeight }) => {
+    const element = document.getElementById('small');
+    return element.sheet.model.rowCount === 11 && element.getBoundingClientRect().height > previousHeight;
+  },
+  { previousHeight: smallH0 },
+);
 const smallH1 = await page.evaluate(() => document.getElementById('small').getBoundingClientRect().height);
 check('appendRows grows the element', smallH1 - smallH0 >= 21 && smallH1 - smallH0 <= 23, `${smallH0} -> ${smallH1}`);
 await page.click('#addCol');
@@ -234,6 +270,10 @@ await page.keyboard.press('Escape');
 await page.keyboard.type('7');
 await page.keyboard.press('Tab');
 check('number rule accepts a number', (await page.evaluate(() => document.getElementById('valid').sheet.model.getValue(1, 1))) === 7);
+await page.waitForFunction(() => {
+  const button = document.getElementById('valid').shadowRoot.querySelector('.cui-dropdown-button');
+  return !!button && getComputedStyle(button).display !== 'none';
+});
 check('list cell shows dropdown button', await page.evaluate(() => getComputedStyle(document.getElementById('valid').shadowRoot.querySelector('.cui-dropdown-button')).display !== 'none'));
 await page.keyboard.press('Alt+ArrowDown');
 check('Alt+Down opens the list', await page.evaluate(() => !!document.getElementById('valid').shadowRoot.querySelector('.cui-dropdown')));

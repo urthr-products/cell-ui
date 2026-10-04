@@ -32,7 +32,7 @@ The equivalent of Excel's "Data Validation." When you set a rule on a range, inp
 ## Specifying ranges
 
 ```ts
-import { columnRange, rowRange } from 'cell-ui';
+import { columnRange, rowRange } from '@urthr-products/cell-ui';
 
 sheet.model.setValidation(columnRange(1), { type: 'number', min: 0, integer: true });        // Entire column B
 sheet.model.setValidation(columnRange(2, 3), { type: 'list', options: ['A', 'B'] });          // Columns C–D
