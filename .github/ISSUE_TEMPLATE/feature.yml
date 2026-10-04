@@ -1,0 +1,33 @@
+name: Feature request
+description: Propose a focused improvement to cell-ui
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem or limitation should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest useful change and any API implications.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Could this be implemented as a plugin or application-level feature?
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I searched existing issues and pull requests.
+          required: true
+        - label: I understand that submitting a request does not guarantee implementation.
+          required: true

@@ -2,31 +2,34 @@
 
 ## 必要環境
 
-- Node.js 22 以上(開発時)
+- Node.js 22.12.0 以上(開発時)
 - 対応ブラウザ: Chrome / Edge / Firefox / Safari の最新版(ES2020、Shadow DOM、ResizeObserver を使用)
 
 ## インストール
 
-npm には未公開のため、次のいずれかで導入します。
+npm パッケージはまだ公開していません。リポジトリを取得してビルドし、必要に応じてローカル配布用の tarball を作成します。
 
 ```bash
-# 1) ビルド成果物を配置する
-npm install && npm run build      # dist/cell-ui.js, dist/cell-ui.iife.js, dist/cell-ui.css
+git clone https://github.com/urthr-products/cell-ui.git
+cd cell-ui
+npm ci
+npm run build
+npm pack                          # urthr-products-cell-ui-0.1.0.tgz
+```
 
-# 2) Git 参照でインストールする
-npm install github:sumikof/cell-ui
+最初の npm リリース以降は、次のコマンドでインストールできます。
 
-# 3) tarball を作って配布する
-npm pack                          # cell-ui-0.1.0.tgz
+```bash
+npm install @urthr-products/cell-ui
 ```
 
 `package.json` の `exports` は次のとおりです。
 
 | 指定 | 内容 |
 | --- | --- |
-| `cell-ui` | ES モジュール(`dist/cell-ui.js`)。型定義は `dist/index.d.ts` |
-| `cell-ui/style.css` | スタイルシート |
-| `cell-ui/iife` | `<script>` タグ用の単一ファイル(グローバル `CellUI`) |
+| `@urthr-products/cell-ui` | ES モジュール(`dist/cell-ui.js`)。型定義は `dist/index.d.ts` |
+| `@urthr-products/cell-ui/style.css` | スタイルシート |
+| `@urthr-products/cell-ui/iife` | `<script>` タグ用の単一ファイル(グローバル `CellUI`) |
 
 ## 最小構成
 
@@ -35,8 +38,8 @@ npm pack                          # cell-ui-0.1.0.tgz
 ```
 
 ```ts
-import { Spreadsheet } from 'cell-ui';
-import 'cell-ui/style.css';
+import { Spreadsheet } from '@urthr-products/cell-ui';
+import '@urthr-products/cell-ui/style.css';
 
 const sheet = new Spreadsheet(document.getElementById('app')!, {
   rows: 200,

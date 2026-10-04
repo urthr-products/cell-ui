@@ -2,31 +2,34 @@
 
 ## Requirements
 
-- Node.js 22 or later (for development)
+- Node.js 22.12.0 or later (for development)
 - Supported browsers: latest versions of Chrome / Edge / Firefox / Safari (uses ES2020, Shadow DOM, and ResizeObserver)
 
 ## Installation
 
-The package is not published to npm yet, so install it in one of the following ways.
+The npm package has not been published yet. Clone the repository, build it, and optionally create a local package tarball:
 
 ```bash
-# 1) Deploy the build output
-npm install && npm run build      # dist/cell-ui.js, dist/cell-ui.iife.js, dist/cell-ui.css
+git clone https://github.com/urthr-products/cell-ui.git
+cd cell-ui
+npm ci
+npm run build
+npm pack                          # urthr-products-cell-ui-0.1.0.tgz
+```
 
-# 2) Install from a Git reference
-npm install github:sumikof/cell-ui
+Starting with the first npm release, install it with:
 
-# 3) Create and distribute a tarball
-npm pack                          # cell-ui-0.1.0.tgz
+```bash
+npm install @urthr-products/cell-ui
 ```
 
 The `exports` in `package.json` are as follows.
 
 | Specifier | Description |
 | --- | --- |
-| `cell-ui` | ES module (`dist/cell-ui.js`). Type definitions are in `dist/index.d.ts` |
-| `cell-ui/style.css` | Stylesheet |
-| `cell-ui/iife` | Single file for `<script>` tags (global `CellUI`) |
+| `@urthr-products/cell-ui` | ES module (`dist/cell-ui.js`). Type definitions are in `dist/index.d.ts` |
+| `@urthr-products/cell-ui/style.css` | Stylesheet |
+| `@urthr-products/cell-ui/iife` | Single file for `<script>` tags (global `CellUI`) |
 
 ## Minimal setup
 
@@ -35,8 +38,8 @@ The `exports` in `package.json` are as follows.
 ```
 
 ```ts
-import { Spreadsheet } from 'cell-ui';
-import 'cell-ui/style.css';
+import { Spreadsheet } from '@urthr-products/cell-ui';
+import '@urthr-products/cell-ui/style.css';
 
 const sheet = new Spreadsheet(document.getElementById('app')!, {
   rows: 200,

@@ -5,7 +5,7 @@ cell-ui のコアは「セル UI」に専念し、関数(数式)、入力補助�
 ## プラグイン
 
 ```ts
-import type { SpreadsheetPlugin } from 'cell-ui';
+import type { SpreadsheetPlugin } from '@urthr-products/cell-ui';
 
 export const myPlugin: SpreadsheetPlugin = {
   name: 'my-plugin',
@@ -142,7 +142,7 @@ sheet.model.events.on('change', () => sheet.grid.scheduleRender());   // 参照�
 ## UI 文言の追加
 
 ```ts
-import { registerLocale, getStrings } from 'cell-ui';
+import { registerLocale, getStrings } from '@urthr-products/cell-ui';
 registerLocale('zh', { ...getStrings('en'), bold: '粗体', … });
 new Spreadsheet(el, { locale: 'zh' });
 ```

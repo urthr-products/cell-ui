@@ -49,7 +49,7 @@ sheet.pasteFromClipboard({ valuesOnly: true });     // navigator.clipboard.read 
 sheet.pasteData({ html, text });                    // Paste arbitrary data (e.g. a table received from a server)
 
 // Low-level API
-import { buildClipboardPayload, parseHtmlTable, parseTsv, serializeHtml, serializeTsv, styleToCss } from 'cell-ui';
+import { buildClipboardPayload, parseHtmlTable, parseTsv, serializeHtml, serializeTsv, styleToCss } from '@urthr-products/cell-ui';
 const payload = buildClipboardPayload(sheet.model, range);   // { text, html, block, range }
 const table = parseHtmlTable(html);                          // { cells, columnWidths, rowHeights } | null
 ```

@@ -46,7 +46,7 @@ new Spreadsheet(el, { defaultStyle: { fontFamily: 'Meiryo', fontSize: 10 } });
 | `none` | 枠なし(隣接セルの共有辺も消す) |
 
 ```ts
-import { applyBorderPreset } from 'cell-ui';
+import { applyBorderPreset } from '@urthr-products/cell-ui';
 applyBorderPreset(sheet, sheet.selection.range, 'outside', '#000000');
 sheet.commands.execute('format.borders', { args: 'all' });
 ```

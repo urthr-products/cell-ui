@@ -47,11 +47,11 @@ Starts the Vite server and drives `index.html` and `embed.html` with Playwright.
 npm run build && npm run e2e
 ```
 
-The Chromium path is assumed to be `/opt/pw-browsers/chromium`. In other environments, change `executablePath` in `scripts/e2e.mjs` or install it with `npx playwright install chromium`.
+By default, Playwright uses its managed Chromium installation. Install it with `npx playwright install chromium`. To use another executable, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` when running the E2E script.
 
 ### CI
 
-`.github/workflows/ci.yml` runs `typecheck` → `test` → `build` on every push / pull request.
+`.github/workflows/ci.yml` runs `typecheck` → `test` → `build` → `e2e` on every push / pull request.
 
 ## Coding conventions
 

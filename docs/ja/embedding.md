@@ -54,8 +54,8 @@ Shadow DOM で CSS を分離するため、ホストページのスタイルと�
 
 ```tsx
 import { useEffect, useRef } from 'react';
-import { Spreadsheet, type SheetSnapshot } from 'cell-ui';
-import 'cell-ui/style.css';
+import { Spreadsheet, type SheetSnapshot } from '@urthr-products/cell-ui';
+import '@urthr-products/cell-ui/style.css';
 
 export function Sheet({ value, onChange }: { value?: Partial<SheetSnapshot>; onChange: (json: SheetSnapshot) => void }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -77,8 +77,8 @@ export function Sheet({ value, onChange }: { value?: Partial<SheetSnapshot>; onC
 <template><div ref="el" style="height: 500px" /></template>
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { Spreadsheet } from 'cell-ui';
-import 'cell-ui/style.css';
+import { Spreadsheet } from '@urthr-products/cell-ui';
+import '@urthr-products/cell-ui/style.css';
 
 const el = ref<HTMLDivElement>();
 let sheet: Spreadsheet;

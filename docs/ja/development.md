@@ -47,11 +47,11 @@ Vite サーバーを起動し、Playwright で `index.html` と `embed.html` を
 npm run build && npm run e2e
 ```
 
-Chromium のパスは `/opt/pw-browsers/chromium` を想定しています。別環境では `scripts/e2e.mjs` の `executablePath` を変更するか、`npx playwright install chromium` で取得してください。
+通常は Playwright が管理する Chromium を使用します。`npx playwright install chromium` でインストールしてください。別の実行ファイルを使う場合は、E2E 実行時に `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` を指定します。
 
 ### CI
 
-`.github/workflows/ci.yml` で push / pull request ごとに `typecheck` → `test` → `build` を実行します。
+`.github/workflows/ci.yml` で push / pull request ごとに `typecheck` → `test` → `build` → `e2e` を実行します。
 
 ## コーディング規約
 

@@ -5,7 +5,7 @@ The cell-ui core focuses solely on the "cell UI"; functions (formulas), input as
 ## Plugins
 
 ```ts
-import type { SpreadsheetPlugin } from 'cell-ui';
+import type { SpreadsheetPlugin } from '@urthr-products/cell-ui';
 
 export const myPlugin: SpreadsheetPlugin = {
   name: 'my-plugin',
@@ -142,7 +142,7 @@ Add rule types with `sheet.registerValidator(type, fn)` (see [Validation](./vali
 ## Adding UI strings
 
 ```ts
-import { registerLocale, getStrings } from 'cell-ui';
+import { registerLocale, getStrings } from '@urthr-products/cell-ui';
 registerLocale('zh', { ...getStrings('en'), bold: '粗体', … });
 new Spreadsheet(el, { locale: 'zh' });
 ```

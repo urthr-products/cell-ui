@@ -46,7 +46,7 @@ Use `applyBorderPreset(sheet, range, preset)` or the `format.borders` command to
 | `none` | No border (also removes edges shared with adjacent cells) |
 
 ```ts
-import { applyBorderPreset } from 'cell-ui';
+import { applyBorderPreset } from '@urthr-products/cell-ui';
 applyBorderPreset(sheet, sheet.selection.range, 'outside', '#000000');
 sheet.commands.execute('format.borders', { args: 'all' });
 ```
