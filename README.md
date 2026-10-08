@@ -5,7 +5,7 @@
 
 An Excel-like spreadsheet UI library for the browser, maintained by **urthr products**. It is framework-free (TypeScript + DOM only) and keeps formula evaluation outside the core so applications can add it through plugins.
 
-> **Pre-1.0 status:** the public API is usable, but may change before the first stable release. The npm package is prepared as `@urthr-products/cell-ui` and will become installable with the first npm release.
+> **Pre-1.0 status:** the public API is usable, but may change before the first stable release. Install the package from npm as `@urthr-products/cell-ui`.
 
 - **Copy & paste to/from Microsoft Excel** — values and formatting round-trip through Excel-compatible `text/html` and `text/plain`.
 - **Excel keyboard shortcuts** — navigation, selection, editing, clipboard, undo/redo, formatting, row/column selection and more.
@@ -39,17 +39,6 @@ Documentation is available in English and Japanese:
 | [Development guide](./docs/en/development.md) | Build, test and CI |
 
 ## Installation
-
-The npm package has not been published yet. To evaluate the current source build:
-
-```bash
-git clone https://github.com/urthr-products/cell-ui.git
-cd cell-ui
-npm ci
-npm run build
-```
-
-Starting with the first npm release, installation will be:
 
 ```bash
 npm install @urthr-products/cell-ui

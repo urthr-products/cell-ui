@@ -7,18 +7,6 @@
 
 ## インストール
 
-npm パッケージはまだ公開していません。リポジトリを取得してビルドし、必要に応じてローカル配布用の tarball を作成します。
-
-```bash
-git clone https://github.com/urthr-products/cell-ui.git
-cd cell-ui
-npm ci
-npm run build
-npm pack                          # urthr-products-cell-ui-0.1.0.tgz
-```
-
-最初の npm リリース以降は、次のコマンドでインストールできます。
-
 ```bash
 npm install @urthr-products/cell-ui
 ```
