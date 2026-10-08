@@ -7,18 +7,6 @@
 
 ## Installation
 
-The npm package has not been published yet. Clone the repository, build it, and optionally create a local package tarball:
-
-```bash
-git clone https://github.com/urthr-products/cell-ui.git
-cd cell-ui
-npm ci
-npm run build
-npm pack                          # urthr-products-cell-ui-0.1.0.tgz
-```
-
-Starting with the first npm release, install it with:
-
 ```bash
 npm install @urthr-products/cell-ui
 ```
